@@ -7,7 +7,10 @@ from .models import Book
 # Create your views here.
 
 def index(request):
-    return HttpResponse("Welcome");
+    static_file = open('index.html', 'r')
+    contents = static_file.read()
+    static_file.close()
+    return HttpResponse(contents);
 
 def genre(request, genre_name):
     qres = Book.objects.filter(genre=genre_name)
@@ -15,4 +18,6 @@ def genre(request, genre_name):
     for i in qres:
         resp.append(i.book_name)
         resp.append(i.pub_year)
-    return HttpResponse(str(resp))
+    stringified = str(resp)
+    stringified.replace("'", '"') # =D
+    return HttpResponse(stringified)

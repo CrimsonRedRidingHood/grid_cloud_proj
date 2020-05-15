@@ -1,0 +1,44 @@
+<html>
+    <style>
+    </style>
+    <head>
+        <title>Books</title>
+    </head>
+    <body>
+        <select id="genres" name="genres">
+            <option value="classic">classic</option>
+        </select>
+        <button type="button" onclick="fetch_books();">Get a list of books</button>
+        <ul id="fetched">
+        </ul>
+    </body>
+    <script>
+        function fetch_books()
+        {
+            genre_to_lookup = genres.selectedOptions[0].value;
+            while(fetched.childNodes.length !== 0)
+            {
+                fetched.removeChild(fetched.childNodes[0]);
+            }
+            
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200)
+            {
+                resp_string = this.responseText.toString().replace(/\'/g,'"');
+                console.log(resp_string);
+                data = JSON.parse(resp_string);
+                for(i = 0; i < data.length; i += 2)
+                {
+                    var list_el = document.createElement("li");
+                    var year_string = data[i+1].toString();
+                    list_el.innerHTML = data[i] + ", " + year_string;
+                    fetched.appendChild(list_el);
+                }
+            }
+            };
+            xhttp.open("GET", "/books/" + genre_to_lookup + "/", true);
+            xhttp.send();
+        }
+    </script>
+</html>
